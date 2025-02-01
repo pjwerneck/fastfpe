@@ -8,7 +8,7 @@ all: build
 build:
 	@for version in $(PYTHON_VERSIONS); do \
 		echo "Building for Python $$version"; \
-		maturin build --interpreter python$$version; \
+		maturin build --release --interpreter python$$version; \
 	done
 
 # Clean target to remove build artifacts
@@ -25,7 +25,6 @@ test:
 	maturin develop --uv
 	cargo test
 	pytest
-
 
 
 # Help target to explain usage
