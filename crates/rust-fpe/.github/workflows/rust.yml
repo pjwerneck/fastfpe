@@ -1,0 +1,43 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Benchmarks
+      run: cargo bench --verbose
+    - name: Documentation
+      run: cargo doc --no-deps ; rm -f target/doc/.lock
+    - name: Upload docs
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: target/doc
+
+  deploy-pages:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+    - uses: actions/deploy-pages@v2

@@ -1,0 +1,22 @@
+[package]
+name = "fastfpe"
+version = "0.1.0"
+edition = "2021"
+authors = ["Pedro Werneck <pedro.werneck@gmail.com>"]
+description = "Fast Format Preserving Encryption (FPE) implementation in Rust"
+license = "MIT"
+repository = "https://github.com/pjwerneck/fastfpe"
+readme = "README.md"
+
+[lib]
+name = "fastfpe"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["python"]
+python = ["dep:pyo3"]
+
+[dependencies]
+hex = "0.4"
+fpe = { path = "crates/rust-fpe" }
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
