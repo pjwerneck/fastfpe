@@ -1,5 +1,5 @@
 # Define Python versions
-PYTHON_VERSIONS := 3.10 3.11 3.12
+PYTHON_VERSIONS := 3.8 3.9 3.10 3.11 3.12
 
 # Default target
 all: build

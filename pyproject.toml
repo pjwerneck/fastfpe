@@ -7,7 +7,7 @@ name = "fastfpe"
 version = "0.1.2"
 description = "Fast Format Preserving Encryption (FPE) implementation in Rust"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 license = "MIT"
 authors = [
     {name = "Pedro Werneck", email = "pedro.werneck@gmail.com"}
@@ -16,6 +16,8 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -30,7 +32,7 @@ Documentation = "https://github.com/pjwerneck/fastfpe#readme"
 [dependency-groups]
 dev = [
     "ff3>=1.0.2",
-    "hypothesis>=6.124.9",
+    "hypothesis>=6.0.0",
     "pycryptodome>=3.21.0",
     "pytest>=8.3.4",
 ]
