@@ -9,7 +9,7 @@ repository = "https://github.com/pjwerneck/fastfpe"
 readme = "README.md"
 
 [lib]
-name = "fastfpe"
+name = "_rust_fastfpe"
 crate-type = ["cdylib", "rlib"]
 
 [features]

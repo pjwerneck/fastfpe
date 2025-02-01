@@ -37,7 +37,8 @@ dev = [
 
 [tool.maturin]
 features = ["python"]
-module-name = "fastfpe"
+module-name = "fastfpe._rust_fastfpe"  # Change this line to make it a submodule
+python-source = "python"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

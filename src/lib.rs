@@ -3,7 +3,7 @@ use pyo3::{exceptions::PyValueError, prelude::*};
 mod ff3_1;
 
 #[pyfunction]
-#[pyo3(text_signature = "(key, tweak, alphabet, plaintext)", name = "encrypt")]
+#[pyo3(text_signature = "(key, tweak, alphabet, plaintext)")]
 /// Encrypts plaintext using FF3-1 format-preserving encryption
 ///
 /// Args:
@@ -17,7 +17,7 @@ mod ff3_1;
 ///
 /// Raises:
 ///     ValueError: If inputs are invalid
-fn encrypt_ff3_1(
+fn ff3_1_encrypt(
     py: Python,
     key: &str,
     tweak: &str,
@@ -30,10 +30,7 @@ fn encrypt_ff3_1(
 }
 
 #[pyfunction]
-#[pyo3(
-    text_signature = "(key, tweak, alphabet, ciphertext)",
-    name = "decrypt"
-)]
+#[pyo3(text_signature = "(key, tweak, alphabet, ciphertext)")]
 /// Decrypts ciphertext using FF3-1 format-preserving encryption
 ///
 /// Args:
@@ -47,7 +44,7 @@ fn encrypt_ff3_1(
 ///
 /// Raises:
 ///     ValueError: If inputs are invalid
-fn decrypt_ff3_1(
+fn ff3_1_decrypt(
     py: Python,
     key: &str,
     tweak: &str,
@@ -60,12 +57,8 @@ fn decrypt_ff3_1(
 }
 
 #[pymodule]
-fn fastfpe(_py: Python, m: &PyModule) -> PyResult<()> {
-    let ff3_1_mod = PyModule::new(_py, "ff3_1")?;
-
-    ff3_1_mod.add_function(wrap_pyfunction!(encrypt_ff3_1, _py)?)?;
-    ff3_1_mod.add_function(wrap_pyfunction!(decrypt_ff3_1, _py)?)?;
-
-    m.add_submodule(ff3_1_mod)?;
+fn _rust_fastfpe(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(ff3_1_encrypt, m)?)?;
+    m.add_function(wrap_pyfunction!(ff3_1_decrypt, m)?)?;
     Ok(())
 }
