@@ -80,6 +80,9 @@ jobs:
     name: Publish to PyPI
     needs: [linux-wheels, macos-wheels, windows-wheels]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Download all wheel artifacts
         uses: actions/download-artifact@v4
@@ -93,3 +96,4 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages-dir: wheelhouse
+          skip-existing: false
