@@ -164,3 +164,15 @@ def test_wrong_tweak_changes_output():
     # decryption with a different tweak should not recover plaintext
     dec = ff3_1.decrypt(key, tweak_b, alphabet, ct)
     assert dec != pt
+
+
+def test_kat_docstring_examples():
+    # KAT from the Rust docstring example
+    key = "ad41ec5d2356deae53ae76f50b4ba6d2"
+    tweak = "cf29da1e18d970"
+    alphabet = "0123456789"
+    pt = "6520935496"
+
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct == "4716569208"
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt

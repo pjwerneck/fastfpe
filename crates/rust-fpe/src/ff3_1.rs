@@ -285,4 +285,65 @@ pub fn decrypt(
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use super::FF3_1;
+    use crate::result::Result;
+
+    fn parse_hex(s: &str) -> Vec<u8> {
+        let mut out = Vec::with_capacity(s.len() / 2);
+        let bytes = s.as_bytes();
+        for i in (0..bytes.len()).step_by(2) {
+            let hi = (bytes[i] as char).to_digit(16).unwrap();
+            let lo = (bytes[i + 1] as char).to_digit(16).unwrap();
+            out.push(((hi << 4) | lo) as u8);
+        }
+        out
+    }
+
+    #[test]
+    fn test_kat_docstring() -> Result<()> {
+        // Example from the module docstring
+        let key = parse_hex("ad41ec5d2356deae53ae76f50b4ba6d2");
+        let tweak = parse_hex("cf29da1e18d970");
+        let ff = FF3_1::new(&key, Some(&tweak), 10, None)?;
+
+        let pt = "6520935496";
+        let ct = ff.encrypt(pt, None)?;
+        assert_eq!(ct, "4716569208");
+        Ok(())
+    }
+
+    #[test]
+    fn test_key_sizes_roundtrip() -> Result<()> {
+        let tweak = [0u8; 7];
+        let alphabet = Some("0123456789");
+        let plaintext = "123456789012";
+
+        let keys = vec![vec![0u8; 16], vec![1u8; 24], vec![2u8; 32]];
+        for k in keys {
+            let ff = FF3_1::new(&k, Some(&tweak), 10, alphabet)?;
+            let ct = ff.encrypt(plaintext, None)?;
+            let dt = ff.decrypt(&ct, None)?;
+            assert_eq!(dt, plaintext);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_tweak_invalid_length() {
+        let key = vec![0u8; 16];
+        let bad_tweak = vec![0u8; 8];
+        let res = FF3_1::new(&key, Some(&bad_tweak), 10, None);
+        assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_alphabet_duplicates() {
+        let key = vec![0u8; 16];
+        let tweak = [0u8; 7];
+        // alphabet with duplicates should error
+        let res = FF3_1::new(&key, Some(&tweak), 10, Some("1123456789"));
+        assert!(res.is_err());
+    }
+}
