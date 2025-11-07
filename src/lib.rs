@@ -57,7 +57,7 @@ fn ff3_1_decrypt(
 }
 
 #[pymodule]
-fn _rust_fastfpe(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _rust_fastfpe(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(ff3_1_encrypt, m)?)?;
     m.add_function(wrap_pyfunction!(ff3_1_decrypt, m)?)?;
     Ok(())

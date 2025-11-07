@@ -1,14 +1,16 @@
 # Define Python versions
-PYTHON_VERSIONS := 3.8 3.9 3.10 3.11 3.12
+PYTHON_VERSIONS := 3.8 3.9 3.10 3.11 3.12 3.13 3.14
 
 # Default target
 all: build
 
 # Build target for all Python versions
+# Note: Using abi3, one wheel per platform works for 3.8–3.14. We keep the loop
+# but set PYO3_USE_ABI3_FORWARD_COMPATIBILITY to allow 3.14 builds with PyO3 0.22.
 build:
 	@for version in $(PYTHON_VERSIONS); do \
 		echo "Building for Python $$version"; \
-		maturin build --release --interpreter python$$version; \
+		PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 maturin build --release --interpreter python$$version; \
 	done
 
 # Clean target to remove build artifacts
