@@ -1,9 +1,11 @@
+from typing import Final
+
 def encrypt(key: str, tweak: str, alphabet: str, plaintext: str) -> str:
     """Encrypts plaintext using FF3-1 format-preserving encryption
 
     Args:
         key (str): Hex-encoded AES key (16, 24, or 32 bytes after decoding)
-        tweak (str): Hex-encoded tweak (7 or 8 bytes after decoding)
+        tweak (str): Hex-encoded tweak (exactly 7 bytes after decoding)
         alphabet (str): String containing the valid characters
         plaintext (str): Text to encrypt, must contain only characters from alphabet
 
@@ -20,7 +22,7 @@ def decrypt(key: str, tweak: str, alphabet: str, ciphertext: str) -> str:
 
     Args:
         key (str): Hex-encoded AES key (16, 24, or 32 bytes after decoding)
-        tweak (str): Hex-encoded tweak (7 or 8 bytes after decoding)
+        tweak (str): Hex-encoded tweak (exactly 7 bytes after decoding)
         alphabet (str): String containing the valid characters
         ciphertext (str): Text to decrypt, must contain only characters from alphabet
 
@@ -31,3 +33,5 @@ def decrypt(key: str, tweak: str, alphabet: str, ciphertext: str) -> str:
         ValueError: If inputs are invalid
     """
     ...
+
+__all__: Final = ["encrypt", "decrypt"]

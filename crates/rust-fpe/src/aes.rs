@@ -41,7 +41,12 @@ impl Cipher {
             16 => construct_cipher!(Aes128, key, IV),
             24 => construct_cipher!(Aes192, key, IV),
             32 => construct_cipher!(Aes256, key, IV),
-            _ => return Err(Error::new("invalid key length")),
+            _ => {
+                return Err(Error::new(&format!(
+                    "invalid key length; expected 16, 24, or 32 bytes, got {}",
+                    key.len()
+                )))
+            }
         })
     }
 

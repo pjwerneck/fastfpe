@@ -11,10 +11,12 @@ while maintaining compatibility with existing systems.
 
 ## Features
 
-- FF3-1 Format Preserving Encryption algorithm
+- FF1 and FF3-1 Format Preserving Encryption algorithms
 - Fast Rust implementation with Python bindings
 - Support for custom alphabets
 - Thread-safe
+
+> [!Note]: As of late 2025, FF3/FF3-1 are no longer recommended in some security guidance due to design concerns. FF1 is fully supported here and recommended for new deployments. FF3-1 remains available for compatibility and migration.
 
 ## Installation
 
@@ -22,24 +24,45 @@ while maintaining compatibility with existing systems.
 pip install fastfpe
 ```
 
-## Usage
+## Usage (FF3-1)
 
 ```python
 >>> from fastfpe import ff3_1
->>> 
+>>>
 >>> key = "3eaa133d22a7ee2432fb8ecfde1e97d9106dcf26b9edaa52b3ed4acd9a9b8445"
->>> tweak = "5be49f26c1dbb7"  # 7 bytes, hex-encoded
+>>> tweak = "5be49f26c1dbb7"  # 7 bytes (14 hex chars)
 >>> alphabet = "abcdef0123456789"
 >>> plaintext = "024587931578"
->>> 
->>> # Encrypt
+>>>
 >>> ciphertext = ff3_1.encrypt(key, tweak, alphabet, plaintext)
 >>> ciphertext
 'd756b8704a2d'
 >>> ff3_1.decrypt(key, tweak, alphabet, ciphertext)
 '024587931578'
-
 ```
+
+## Usage (FF1)
+
+```python
+>>> from fastfpe import ff1
+>>>
+>>> # 128/192/256-bit AES keys supported (16/24/32 bytes -> 32/48/64 hex chars)
+>>> key = "2b7e151628aed2a6abf7158809cf4f3c"  # 128-bit key
+>>> tweak = ""  # FF1 tweak may be empty or longer (length impacts security domain sizing)
+>>> alphabet = "0123456789"
+>>> plaintext = "0123456789"
+>>>
+>>> ciphertext = ff1.encrypt(key, tweak, alphabet, plaintext)
+>>> ciphertext
+'2433477484'
+>>> ff1.decrypt(key, tweak, alphabet, ciphertext)
+'0123456789'
+```
+
+Notes:
+- FF1 tweak can be empty; size limits depend on NIST SP 800-38G constraints (radix and length bounds enforced internally).
+- Provide a non-empty tweak for domain separation across contexts.
+- Both algorithms return `ValueError` with descriptive messages on invalid inputs.
 
 ## Performance
 
@@ -80,6 +103,21 @@ Rust implementation:   0.011 ms/op (± 0.000 ms)
 Rust is 16.8x faster
 
 ```
+
+
+## Support Matrix
+
+| Component | Versions / Platforms |
+|-----------|----------------------|
+| Python    | CPython 3.8 – 3.14 (abi3 single wheel per platform) |
+| Operating Systems | Linux (x86_64, aarch64 manylinux), macOS (universal2), Windows (x64, arm64) |
+| Algorithms | FF1 (recommended), FF3-1 (compatibility) |
+| Key Sizes  | 128 / 192 / 256-bit AES |
+| Tweak      | FF1: variable length (can be empty). FF3-1: exactly 7 bytes |
+| Alphabet   | Custom per call; size defines radix (validated) |
+
+If you need other targets (e.g., musllinux, ppc64le) open an issue or PR.
+
 
 ## License
 

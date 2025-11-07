@@ -1,4 +1,3 @@
-import math
 import string
 
 from fastfpe import ff3_1
@@ -21,11 +20,10 @@ def ff3_examples(draw):
     alpha_list = draw(st.lists(st.sampled_from(pool), min_size=2, max_size=20, unique=True))
     alphabet = "".join(alpha_list)
 
-    radix = len(alphabet)
-    # compute min and max lengths as in FFX
-    min_len = math.ceil(6 / math.log10(radix))
-    max_len = max(min_len, int((192 / math.log2(radix))))
-    max_len = min(max_len, 200)
+    # Use the reference implementation's computed bounds to avoid sampling invalid lengths
+    ref_cipher = FF3Cipher.withCustomAlphabet(key, tweak, alphabet)
+    min_len = ref_cipher.minLen
+    max_len = ref_cipher.maxLen
 
     pt_len = draw(st.integers(min_value=min_len, max_value=max_len))
     pt = "".join(draw(st.lists(st.sampled_from(list(alphabet)), min_size=pt_len, max_size=pt_len)))

@@ -36,7 +36,10 @@ impl FFX {
         opt_alpha: Option<&str>,
     ) -> Result<Self> {
         if radix < 2 {
-            return Err(Error::new("invalid radix"));
+            return Err(Error::new(&format!(
+                "invalid radix; must be at least 2, got {}",
+                radix
+            )));
         }
 
         let alpha = alphabet::Alphabet::new(opt_alpha, Some(radix))?;
@@ -50,7 +53,10 @@ impl FFX {
         //         = ceil(6 / log_10(radix))
         let mintxt = (6f64 / (radix as f64).log10()).ceil() as usize;
         if mintxt < 2 || mintxt > maxtxt {
-            return Err(Error::new("unsupported radix/maximum text length"));
+            return Err(Error::new(&format!(
+                "unsupported combination of radix and maximum text length; min required length is {}, max allowed is {}",
+                mintxt, maxtxt
+            )));
         }
 
         if mintwk > maxtwk {
@@ -102,13 +108,17 @@ impl FFX {
         self.alpha.len()
     }
 
+    #[allow(dead_code)]
     pub fn get_cipher_block_size(&self) -> usize {
         self.cipher.block_size()
     }
 
     pub fn validate_text_length(&self, n: usize) -> Result<()> {
         if n < self.len.txt.min || n > self.len.txt.max {
-            return Err(Error::new("invalid text length"));
+            return Err(Error::new(&format!(
+                "invalid text length; expected between {} and {} characters, got {}",
+                self.len.txt.min, self.len.txt.max, n
+            )));
         }
 
         Ok(())
@@ -118,7 +128,22 @@ impl FFX {
         if n < self.len.twk.min
             || (self.len.twk.max > 0 && n > self.len.twk.max)
         {
-            return Err(Error::new("invalid tweak length"));
+            if self.len.twk.max > 0 && self.len.twk.min == self.len.twk.max {
+                return Err(Error::new(&format!(
+                    "invalid tweak length; expected exactly {} bytes, got {}",
+                    self.len.twk.min, n
+                )));
+            } else if self.len.twk.max > 0 {
+                return Err(Error::new(&format!(
+                    "invalid tweak length; expected between {} and {} bytes, got {}",
+                    self.len.twk.min, self.len.twk.max, n
+                )));
+            } else {
+                return Err(Error::new(&format!(
+                    "invalid tweak length; expected at least {} bytes, got {}",
+                    self.len.twk.min, n
+                )));
+            }
         }
 
         Ok(())

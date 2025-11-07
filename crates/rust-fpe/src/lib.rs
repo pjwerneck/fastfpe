@@ -10,27 +10,26 @@
 //! The maximum radix supported by this default alphabet is 62, the number of
 //! characters in the alphabet.
 //!
-//! # Example
+//! # Example (FF3-1)
 //! ```rust
-//! let ff1 = fpe::ff1::FF1::new(
+//! let ff3_1 = fpe::ff3_1::FF3_1::new(
 //!     &[
-//!         0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
-//!         0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c,
+//!         0xad, 0x41, 0xec, 0x5d, 0x23, 0x56, 0xde, 0xae,
+//!         0x53, 0xae, 0x76, 0xf5, 0x0b, 0x4b, 0xa6, 0xd2,
 //!     ],    // the encryption key
-//!     None, // no tweak specified, use an empty one
-//!     0, 0, // no minimum and maximum tweak size
+//!     // the default tweak (exactly 7 bytes for FF3-1)
+//!     Some(&[0xcf, 0x29, 0xda, 0x1e, 0x18, 0xd9, 0x70]),
 //!     10,   // radix specifies the number of characters in the alphabet
 //!     None  // use (the first 10 characters of) the default alphabet
 //! ).unwrap();
 //!
-//! // these are from the first NIST-specified test for FF1
-//! let pt = "0123456789";
-//! let ct = "2433477484";
+//! let pt = "6520935496";
+//! let ct = "4716569208";
 //!
-//! let out = ff1.encrypt(pt, None).unwrap();
+//! let out = ff3_1.encrypt(pt, None).unwrap();
 //! assert!(out == ct);
 //!
-//! let out = ff1.decrypt(&ct, None).unwrap();
+//! let out = ff3_1.decrypt(&ct, None).unwrap();
 //! assert!(out == pt);
 //! ```
 
@@ -44,7 +43,6 @@ pub(crate) mod ffx;
 pub mod error {
 
     /// Structure used by the library to convey errors
-    #[derive(Debug)]
     pub struct Error {
         // compiler thinks "why" is unused because we
         // allow the Debug trait to format it for us.
@@ -57,6 +55,18 @@ pub mod error {
             Error {
                 why: why.to_string(),
             }
+        }
+    }
+
+    impl core::fmt::Display for Error {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            write!(f, "{}", self.why)
+        }
+    }
+
+    impl core::fmt::Debug for Error {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            f.debug_struct("Error").field("why", &self.why).finish()
         }
     }
 }
