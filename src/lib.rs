@@ -8,7 +8,7 @@ mod ff3_1;
 ///
 /// Args:
 ///     key (str): Hex-encoded AES key (16, 24, or 32 bytes after decoding)
-///     tweak (str): Hex-encoded tweak (7 or 8 bytes after decoding)
+///     tweak (str): Hex-encoded tweak (exactly 7 bytes after decoding)
 ///     alphabet (str): String containing the valid characters
 ///     plaintext (str): Text to encrypt, must contain only characters from alphabet
 ///
@@ -35,7 +35,7 @@ fn ff3_1_encrypt(
 ///
 /// Args:
 ///     key (str): Hex-encoded AES key (16, 24, or 32 bytes after decoding)
-///     tweak (str): Hex-encoded tweak (7 or 8 bytes after decoding)
+///     tweak (str): Hex-encoded tweak (exactly 7 bytes after decoding)
 ///     alphabet (str): String containing the valid characters
 ///     ciphertext (str): Text to decrypt, must contain only characters from alphabet
 ///

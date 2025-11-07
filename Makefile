@@ -29,6 +29,16 @@ test:
 	pytest
 
 
+# Run tests for all Python versions
+test-all:
+	@for version in $(PYTHON_VERSIONS); do \
+		echo "Testing for Python $$version"; \
+		PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 maturin develop --release --uv; \
+		uv run --python $$version --isolated --with-editable '.[test]' pytest; \
+	done
+
+
+
 # Help target to explain usage
 help:
 	@echo "Available commands:"
