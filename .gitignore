@@ -3,3 +3,4 @@
 .hypothesis
 
 python/fastfpe/*.so
+.claude/*
