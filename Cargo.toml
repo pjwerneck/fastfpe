@@ -1,6 +1,6 @@
 [package]
 name = "fastfpe"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Pedro Werneck <pedro.werneck@gmail.com>"]
 description = "Fast Format Preserving Encryption (FPE) implementation in Rust"
