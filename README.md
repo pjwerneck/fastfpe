@@ -1,5 +1,9 @@
 # fastfpe
 
+ [![Pytest](https://github.com/pjwerneck/fastfpe/actions/workflows/ci.yml/badge.svg)](https://github.com/pjwerneck/fastfpe/actions/workflows/ci.yml)
+[![Wheels](https://github.com/pjwerneck/fastfpe/actions/workflows/wheels.yml/badge.svg)](https://github.com/pjwerneck/fastfpe/actions/workflows/wheels.yml)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 Fast Format Preserving Encryption (FPE) implementation in Rust with Python
 bindings.
 
@@ -16,31 +20,12 @@ while maintaining compatibility with existing systems.
 - Support for custom alphabets
 - Thread-safe
 
-> [!Note]: As of late 2025, FF3/FF3-1 are no longer recommended in some security guidance due to design concerns. FF1 is fully supported here and recommended for new deployments. FF3-1 remains available for compatibility and migration.
 
 ## Installation
 
 ```bash
 pip install fastfpe
 ```
-
-## Usage (FF3-1)
-
-```python
->>> from fastfpe import ff3_1
->>>
->>> key = "3eaa133d22a7ee2432fb8ecfde1e97d9106dcf26b9edaa52b3ed4acd9a9b8445"
->>> tweak = "5be49f26c1dbb7"  # 7 bytes (14 hex chars)
->>> alphabet = "abcdef0123456789"
->>> plaintext = "024587931578"
->>>
->>> ciphertext = ff3_1.encrypt(key, tweak, alphabet, plaintext)
->>> ciphertext
-'d756b8704a2d'
->>> ff3_1.decrypt(key, tweak, alphabet, ciphertext)
-'024587931578'
-```
-
 ## Usage (FF1)
 
 ```python
@@ -63,6 +48,37 @@ Notes:
 - FF1 tweak can be empty; size limits depend on NIST SP 800-38G constraints (radix and length bounds enforced internally).
 - Provide a non-empty tweak for domain separation across contexts.
 - Both algorithms return `ValueError` with descriptive messages on invalid inputs.
+
+
+## Usage (FF3-1)
+
+
+> [!WARNING]
+> 
+> FF3/FF3-1 are no longer recommended in some security guidance due to design
+> concerns.
+> 
+> FF1 is fully supported by fastfpe and recommended for new deployments.
+> 
+> FF3-1 remains available for compatibility and migration.
+>
+> See [NIST SP 800-38G](https://csrc.nist.gov/pubs/sp/800/38/g/r1/2pd ) and other sources for details.
+
+```python
+>>> from fastfpe import ff3_1
+>>>
+>>> key = "3eaa133d22a7ee2432fb8ecfde1e97d9106dcf26b9edaa52b3ed4acd9a9b8445"
+>>> tweak = "5be49f26c1dbb7"  # 7 bytes (14 hex chars)
+>>> alphabet = "abcdef0123456789"
+>>> plaintext = "024587931578"
+>>>
+>>> ciphertext = ff3_1.encrypt(key, tweak, alphabet, plaintext)
+>>> ciphertext
+'d756b8704a2d'
+>>> ff3_1.decrypt(key, tweak, alphabet, ciphertext)
+'024587931578'
+```
+
 
 ## Performance
 
