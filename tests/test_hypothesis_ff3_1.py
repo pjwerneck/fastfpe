@@ -5,6 +5,15 @@ from ff3 import FF3Cipher
 from hypothesis import given
 from hypothesis import strategies as st
 
+# Unicode character pools for testing multi-byte character handling
+UNICODE_EXTRAS = (
+    "àáâãäåèéêëìíîïòóôõöùúûü"  # Accented Latin
+    "αβγδεζηθικλμνξοπρστυφχψω"  # Greek
+    "абвгдежзийклмнопрстуфхцчшщъыьэюя"  # Cyrillic
+    "零一二三四五六七八九"  # Chinese numerals
+    "あいうえおかきくけこ"  # Japanese Hiragana
+)
+
 
 @st.composite
 def ff3_examples(draw):
@@ -15,8 +24,8 @@ def ff3_examples(draw):
     # tweak must be exactly 7 bytes
     tweak = draw(st.binary(min_size=7, max_size=7)).hex()
 
-    # alphabet: unique characters sampled from digits+lowercase
-    pool = list(string.digits + string.ascii_lowercase)
+    # alphabet: unique characters sampled from digits+lowercase+unicode
+    pool = list(string.digits + string.ascii_lowercase + UNICODE_EXTRAS)
     alpha_list = draw(st.lists(st.sampled_from(pool), min_size=2, max_size=20, unique=True))
     alphabet = "".join(alpha_list)
 

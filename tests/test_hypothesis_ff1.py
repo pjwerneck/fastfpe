@@ -6,6 +6,16 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 
+# Unicode character pools for testing multi-byte character handling
+UNICODE_EXTRAS = (
+    "àáâãäåèéêëìíîïòóôõöùúûü"  # Accented Latin
+    "αβγδεζηθικλμνξοπρστυφχψω"  # Greek
+    "абвгдежзийклмнопрстуфхцчшщъыьэюя"  # Cyrillic
+    "零一二三四五六七八九"  # Chinese numerals
+    "あいうえおかきくけこ"  # Japanese Hiragana
+)
+
+
 @st.composite
 def ff1_examples(draw):
     key_len = draw(st.sampled_from([16, 24, 32]))
@@ -15,7 +25,8 @@ def ff1_examples(draw):
     tweak_len = draw(st.integers(min_value=0, max_value=16))
     tweak = draw(st.binary(min_size=tweak_len, max_size=tweak_len)).hex()
 
-    pool = list(string.digits + string.ascii_lowercase)
+    # Include both ASCII and Unicode characters to test multi-byte handling
+    pool = list(string.digits + string.ascii_lowercase + UNICODE_EXTRAS)
     alpha_list = draw(st.lists(st.sampled_from(pool), min_size=2, max_size=30, unique=True))
     alphabet = "".join(alpha_list)
 

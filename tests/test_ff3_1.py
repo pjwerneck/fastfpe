@@ -176,3 +176,108 @@ def test_kat_docstring_examples():
     ct = ff3_1.encrypt(key, tweak, alphabet, pt)
     assert ct == "4716569208"
     assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_accented_chars():
+    """Test encryption/decryption with accented characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"  # 7 bytes
+    alphabet = "abcdefghijklmnopqrstuvwxyzàáâãäåèéêëìíîïòóôõöùúûü"
+    pt = "héllòwörld"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_cyrillic():
+    """Test encryption/decryption with Cyrillic characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    alphabet = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
+    pt = "привет"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_chinese():
+    """Test encryption/decryption with Chinese characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    alphabet = "零一二三四五六七八九十百千万"
+    pt = "一二三四五六"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_mixed_unicode():
+    """Test encryption/decryption with mixed Unicode characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    # Mix of Latin, Greek, and digits
+    alphabet = "αβγδεζηθικλμνξοπρστυφχψω0123456789"
+    pt = "α1β2γ3δ4ε5ζ6"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_emoji():
+    """Test encryption/decryption with emoji characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    alphabet = "😀😁😂🤣😃😄😅😆😉😊"
+    pt = "😀😁😂🤣😃😊"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_arabic():
+    """Test encryption/decryption with Arabic characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    alphabet = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي"
+    pt = "مرحبابك"
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_japanese_hiragana():
+    """Test encryption/decryption with Japanese Hiragana characters."""
+    key = "2b7e151628aed2a6abf7158809cf4f3c"
+    tweak = "00112233445566"
+    alphabet = "あいうえおかきくけこさしすせそたちつてと"
+    pt = "あいうえおか"  # Uses only characters from the alphabet
+    ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+    assert ct != pt
+    assert len(ct) == len(pt)
+    assert ff3_1.decrypt(key, tweak, alphabet, ct) == pt
+
+
+def test_ff3_1_non_ascii_roundtrip_comprehensive():
+    """Comprehensive test with various non-ASCII alphabets."""
+    key = "00" * 16
+    tweak = "12345678901234"  # 7 bytes hex
+
+    test_cases = [
+        # (alphabet, plaintext) - each alphabet has 10+ unique chars, plaintext >= 6 chars
+        ("äöüßÄÖÜéèê", "äöüßäöüÄÖÜ"),  # German extended (10 chars)
+        ("ñáéíóúÑÁÉÍÓÚ", "ñáéíóúñáéí"),  # Spanish (12 chars)
+        ("àâæçéèêëïîôùûüÿ", "çàéèêëîôïû"),  # French (15 chars)
+        ("가나다라마바사아자차카타파하", "가나다라마바사아"),  # Korean (14 chars)
+        ("₹€£¥₽₩₿₸₺₼", "₹€£¥₽₩₿₸₺₼"),  # Currency symbols (10 chars)
+    ]
+
+    for alphabet, pt in test_cases:
+        ct = ff3_1.encrypt(key, tweak, alphabet, pt)
+        decrypted = ff3_1.decrypt(key, tweak, alphabet, ct)
+        assert decrypted == pt, f"Failed for alphabet: {alphabet}, plaintext: {pt}"

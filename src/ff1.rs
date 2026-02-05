@@ -7,7 +7,7 @@ pub fn encrypt(key: &str, tweak: &str, alphabet: &str, plaintext: &str) -> Resul
     } else {
         hex::decode(tweak).map_err(|e| format!("Invalid tweak hex: {e}"))?
     };
-    let radix = alphabet.len();
+    let radix = alphabet.chars().count();
 
     ff1::encrypt(
         &key_bytes,
@@ -26,7 +26,7 @@ pub fn decrypt(key: &str, tweak: &str, alphabet: &str, ciphertext: &str) -> Resu
     } else {
         hex::decode(tweak).map_err(|e| format!("Invalid tweak hex: {e}"))?
     };
-    let radix = alphabet.len();
+    let radix = alphabet.chars().count();
 
     ff1::decrypt(
         &key_bytes,
